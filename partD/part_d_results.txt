@@ -1,0 +1,91 @@
+
+=======================================================
+Running Task 1 (Baseline)...
+Config: Scheduler=FRFCFS, Mapper=RoBaRaCoCh, Channels=1, Trace=l2miss.trace
+=======================================================
+Results for Task 1 (Baseline):
+  Memory Cycles:       63846
+  Total Read Latency:  782119 (Avg: 78.19 cycles)
+  Total Write Latency: 0 (Avg: 0.00 cycles)
+  Row Hits:            9822
+  Row Misses:          112
+  Row Conflicts:       69
+  Row-Buffer Hit Rate: 98.19%
+
+=======================================================
+Running Task 2 (FCFS)...
+Config: Scheduler=FCFS, Mapper=RoBaRaCoCh, Channels=1, Trace=l2miss.trace
+=======================================================
+Results for Task 2 (FCFS):
+  Memory Cycles:       70161
+  Total Read Latency:  883423 (Avg: 88.32 cycles)
+  Total Write Latency: 0 (Avg: 0.00 cycles)
+  Row Hits:            9822
+  Row Misses:          117
+  Row Conflicts:       64
+  Row-Buffer Hit Rate: 98.19%
+
+=======================================================
+Running Task 2b (Interleaved FRFCFS)...
+Config: Scheduler=FRFCFS, Mapper=RoBaRaCoCh, Channels=1, Trace=interleaved_l2miss.trace
+=======================================================
+Results for Task 2b (Interleaved FRFCFS):
+  Memory Cycles:       3215
+  Total Read Latency:  18594 (Avg: 145.27 cycles)
+  Total Write Latency: 0 (Avg: 0.00 cycles)
+  Row Hits:            120
+  Row Misses:          1
+  Row Conflicts:       7
+  Row-Buffer Hit Rate: 93.75%
+
+=======================================================
+Running Task 2b (Interleaved FCFS)...
+Config: Scheduler=FCFS, Mapper=RoBaRaCoCh, Channels=1, Trace=interleaved_l2miss.trace
+=======================================================
+Results for Task 2b (Interleaved FCFS):
+  Memory Cycles:       11261
+  Total Read Latency:  140322 (Avg: 1096.27 cycles)
+  Total Write Latency: 0 (Avg: 0.00 cycles)
+  Row Hits:            0
+  Row Misses:          1
+  Row Conflicts:       127
+  Row-Buffer Hit Rate: 0.00%
+
+=======================================================
+Running Task 3 (ChRaBaRoCo - Row below Bank)...
+Config: Scheduler=FRFCFS, Mapper=ChRaBaRoCo, Channels=1, Trace=l2miss.trace
+=======================================================
+Results for Task 3 (ChRaBaRoCo - Row below Bank):
+  Memory Cycles:       118446
+  Total Read Latency:  1656143 (Avg: 165.56 cycles)
+  Total Write Latency: 0 (Avg: 0.00 cycles)
+  Row Hits:            9371
+  Row Misses:          18
+  Row Conflicts:       614
+  Row-Buffer Hit Rate: 93.68%
+
+=======================================================
+Running Task 4 (2 Channels)...
+Config: Scheduler=FRFCFS, Mapper=RoBaRaCoCh, Channels=2, Trace=l2miss.trace
+=======================================================
+Results for Task 4 (2 Channels):
+  Memory Cycles:       36966
+  Total Read Latency:  351455 (Avg: 35.13 cycles)
+  Total Write Latency: 0 (Avg: 0.00 cycles)
+  Row Hits:            9811
+  Row Misses:          113
+  Row Conflicts:       79
+  Row-Buffer Hit Rate: 98.08%
+
+
+===============================================================================================
+Configuration                          | Memory Cycles  | Avg Read Lat (cyc) | Row Hit Rate (%)
+===============================================================================================
+Task 1 (Baseline)                      |          63846 |              78.19 |            98.19%
+Task 2 (FCFS)                          |          70161 |              88.32 |            98.19%
+Task 3 (ChRaBaRoCo - Row below Bank)   |         118446 |             165.56 |            93.68%
+Task 4 (2 Channels)                    |          36966 |              35.13 |            98.08%
+===============================================================================================
+Task 2b (Interleaved FRFCFS)           |           3215 |             145.27 |            93.75%
+Task 2b (Interleaved FCFS)             |          11261 |            1096.27 |             0.00%
+===============================================================================================

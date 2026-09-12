@@ -1,0 +1,133 @@
+.include 45nm_bulk.txt
+
+.param VDD=1.1
+.param VBL=1.1
+
+* TASK 2 CIRCUIT
+VDD1 vdd1 0 'VDD'
+VWL1 wl1 0 PWL(0 0 1n 0 1.05n 'VDD')
+MP1 qb1 q1 vdd1 vdd1 pmos W=0.15u L=0.045u
+MN1 qb1 q1 0 0 nmos W=0.20u L=0.045u
+MP2 q1 qb1 vdd1 vdd1 pmos W=0.15u L=0.045u
+MN2 q1 qb1 0 0 nmos W=0.20u L=0.045u
+MA1 bl1 wl1 q1 0 nmos W=0.16u L=0.045u
+MA2 blb1 wl1 qb1 0 nmos W=0.16u L=0.045u
+Cbl1 bl1 0 180f IC='VBL'
+Cblb1 blb1 0 180f IC='VBL'
+.ic v(q1)=0 v(qb1)='VDD'
+
+VDD2 vdd2 0 'VDD'
+VWL2 wl2 0 PWL(0 0 1n 0 1.05n 'VDD')
+MP3 qb2 q2 vdd2 vdd2 pmos W=0.15u L=0.045u
+MN3 qb2 q2 0 0 nmos W=0.20u L=0.045u
+MP4 q2 qb2 vdd2 vdd2 pmos W=0.15u L=0.045u
+MN4 q2 qb2 0 0 nmos W=0.20u L=0.045u
+MA3 bl2 wl2 q2 0 nmos W=0.24u L=0.045u
+MA4 blb2 wl2 qb2 0 nmos W=0.24u L=0.045u
+Cbl2 bl2 0 180f IC='VBL'
+Cblb2 blb2 0 180f IC='VBL'
+.ic v(q2)=0 v(qb2)='VDD'
+
+* TASK 3 CIRCUIT
+VDD3 vdd3 0 'VDD'
+VWL3 wl3 0 PWL(0 0 1n 0 1.05n 'VDD')
+MP5 qb3 q3 vdd3 vdd3 pmos W=0.15u L=0.045u
+MN5 qb3 q3 0 0 nmos W=0.20u L=0.045u
+MP6 q3 qb3 vdd3 vdd3 pmos W=0.15u L=0.045u
+MN6 q3 qb3 0 0 nmos W=0.20u L=0.045u
+MA5 bl3 wl3 q3 0 nmos W=0.16u L=0.045u
+MA6 blb3 wl3 qb3 0 nmos W=0.16u L=0.045u
+Cbl3 bl3 0 1p IC='VDD'
+Cblb3 blb3 0 1p IC='VDD'
+.ic v(q3)=0 v(qb3)='VDD'
+
+* TASK 4 CIRCUIT
+VDD4 vdd4 0 'VDD'
+VWL4 wl4 0 PWL(0 0 1n 0 1.05n 'VDD')
+MP7 qb4 q4 vdd4 vdd4 pmos W=0.15u L=0.045u
+MN7 qb4 q4 0 0 nmos W=0.20u L=0.045u
+MP8 q4 qb4 vdd4 vdd4 pmos W=0.15u L=0.045u
+MN8 q4 qb4 0 0 nmos W=0.20u L=0.045u
+MA7 bl4 wl4 q4 0 nmos W=0.16u L=0.045u
+MA8 blb4 wl4 qb4 0 nmos W=0.16u L=0.045u
+Cbl4 bl4 0 180f IC='VBL'
+Cblb4 blb4 0 180f IC='VBL'
+.ic v(q4)=0 v(qb4)='VDD'
+
+.control
+
+setplot const
+
+let vdd_table = vector(11)
+let dv_table = vector(11)
+let i = 0
+
+foreach vv 1.10 1.05 1.00 0.95 0.90 0.85 0.80 0.75 0.70 0.65 0.60
+    alterparam VDD=$vv
+    reset
+    tran 5p 4n uic
+    let dv_wave3 = v(blb3)-v(bl3)
+    meas tran dv_measure3 FIND dv_wave3 AT=2n
+    set tranplot = $curplot
+    setplot const
+    let vdd_table[$&i] = $vv
+    let dv_table[$&i] = {$tranplot}.dv_measure3
+    let i = i + 1
+end
+
+setplot const
+print vdd_table
+print dv_table
+
+alterparam VDD=1.1
+set temp=27
+reset
+tran 5p 4n uic
+
+let dv16 = v(blb1)-v(bl1)
+let dv24 = v(blb2)-v(bl2)
+
+meas tran dv16_max MAX dv16 FROM=1n TO=4n
+meas tran dv24_max MAX dv24 FROM=1n TO=4n
+meas tran q16_max MAX v(q1) FROM=1n TO=4n
+meas tran q24_max MAX v(q2) FROM=1n TO=4n
+
+echo "TASK 2 RESULTS"
+echo "Access width = 0.16um"
+print q16_max dv16_max
+echo "Access width = 0.24um"
+print q24_max dv24_max
+
+plot dv16 title 'Task 1 Bitline Difference W=0.16um'
+plot dv24 title 'Task 1 Bitline Difference W=0.24um'
+plot v(q1) title 'Task 2 V(Q) W=0.16um'
+plot v(q2) title 'Task 2 V(Q) W=0.24um'
+
+setplot const
+plot dv_table vs vdd_table title 'Task 3 Delta V vs VDD'
+
+set temp=85
+reset
+tran 5p 4n uic
+
+let dv85 = v(blb4)-v(bl4)
+
+meas tran dv85_2ns FIND dv85 AT=2n
+meas tran dv85_max MAX dv85 FROM=1n TO=4n
+meas tran q85_max MAX v(q4) FROM=1n TO=4n
+meas tran bl85_2ns FIND v(bl4) AT=2n
+meas tran blb85_2ns FIND v(blb4) AT=2n
+
+echo "TASK 4 RESULTS"
+echo "VDD = 1.100 V"
+echo "Temperature = 85 C"
+print bl85_2ns
+print blb85_2ns
+print dv85_2ns
+print dv85_max
+print q85_max
+
+plot dv85 title 'Task 4 Delta V at 85C'
+
+.endc
+.end
